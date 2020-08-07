@@ -1,27 +1,28 @@
 import pandas as pd
 import re
 
-# & functions & #
 
-""" make an array from srt file
-# input: srt file
-# return: list of strings"""
+# & functions & #
 def getTextBlock(srt_file):
+    """ make an array from srt file
+    # input: srt file
+    # return: list of strings"""
     f = open(srt_file, 'r')
     x = f.read().split('\n\n')
     f.close()
     return x
 
-"""" make lists for the columns of dataFrame
-# input: srt file
-# return: 4 list of strings"""
+
 def srt_to_df(srt_file):
+    """" make lists for the columns of dataFrame
+    # input: srt file
+    # return: 4 list of strings"""
     start = list()
     end = list()
     text = list()
     speaker = list()
     text_block = getTextBlock(srt_file)
-    # seperate the text to four column
+    # separate the text to four column
     for block in text_block:
         if block.__contains__("<b><font"):  # mark speaker with @$
             temp = re.sub('<b><font face="Rockwell" color="#......">', '', block)
@@ -54,10 +55,10 @@ def srt_to_df(srt_file):
     return start, end, text, speaker
 
 
-"""" make exel file from srt
-# input: srt file
-# return: None """
 def srt_to_exel(srt_file, exel_file):
+    """" make exel file from srt
+    # input: srt file
+    # return: None """
     start, end, text, speaker = srt_to_df(srt_file)
     df_xl = pd.DataFrame()
     df_xl['start'] = start
