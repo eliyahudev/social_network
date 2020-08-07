@@ -64,8 +64,10 @@ def printGraph(g):
 # main
 g = thorCreatGraph(nx.MultiGraph(), 'xl_files/script_thor.xlsx')
 printGraph(g)  # print AB graph
+print(g.nodes)
 print(count_edges_and_nodes(g))  # print #nodes(left) & #edges(right)
 
 g = batmaCreateGraph(nx.MultiGraph(), 'xl_files/script_batman.xlsx')
 printGraph(g)  # print AB graph
+print(g.nodes)
 print(count_edges_and_nodes(g))  # print #nodes(left) & #edges(right)
