@@ -64,7 +64,13 @@ def printGraph(g):
     """vizualization of a graph using mathplotlib library
     input: networkx graph
     output: None"""
-    nx.draw(g, with_labels=True)
+    options = {
+        'node_color': 'gray',
+        'edge_color': '#d3aa78',
+        'node_size': 100,
+        # 'font_color': '#d3aa78',
+    }
+    nx.draw(g, with_labels=True,**options)
     plt.show()
 
 
@@ -82,32 +88,10 @@ def get_centrality(movie_name, path):
         print(graph_name)
         print('closeness_centrality: ', sorted(nx.closeness_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
         print('degree_centrality: ', sorted(nx.degree_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
+        print('pagerank algorithm: ', sorted(nx.pagerank_numpy(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
         if graph_name.__eq__('DiGraph()') or graph_name.__eq__('Graph()'):
             print('betweenness_centrality: ', sorted(nx.betweenness_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
             print('eigenvector_centrality: ', sorted(nx.eigenvector_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
         print()
     print()
 
-# main
-print('Question 2:')
-
-print('part a,b')
-print()
-g = thorCreatGraph(nx.MultiGraph(), 'xl_files/script_thor.xlsx')
-g2 = batmaCreateGraph(nx.MultiGraph(), 'xl_files/script_batman.xlsx')
-printGraph(g)  # print AB graph
-printGraph(g2)
-print("Thor ragnarok characters: ", g.nodes)  # show the characters
-print("Batman begin characters:", g2.nodes)
-print()
-print()
-
-print('part c')
-print('#nodes(left) & #edges(right) for "Thor ragnarok": ', count_edges_and_nodes(g))  # print #nodes(left) & #edges(right)
-print('#nodes(left) & #edges(right) for "Batman begin": ', count_edges_and_nodes(g2))  # print #nodes(left) & #edges(right)
-print()
-print()
-
-print('part d')
-get_centrality('Thor ragnarok', 'xl_files/script_thor.xlsx')
-get_centrality('Batman begin:', 'xl_files/script_batman.xlsx')
