@@ -2,7 +2,6 @@ import graph_creator
 import networkx as nx
 # main
 print('Question 2:')
-# error test
 print('part a,b')
 print()
 g = graph_creator.thorCreatGraph(nx.MultiGraph(), 'xl_files/script_thor.xlsx')
@@ -19,7 +18,6 @@ print('#nodes(left) & #edges(right) for "Thor ragnarok": ', graph_creator.count_
 print('#nodes(left) & #edges(right) for "Batman begin": ', graph_creator.count_edges_and_nodes(g2))  # print #nodes(left) & #edges(right)
 print()
 print()
-# dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddf
 print('part d')
 graph_creator.get_centrality('Thor ragnarok', 'xl_files/script_thor.xlsx')
 graph_creator.get_centrality('Batman begin:', 'xl_files/script_batman.xlsx')
