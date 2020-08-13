@@ -41,7 +41,7 @@ def srt_to_df(srt_file):
         if len(data) > 3:  # if the text is longer then one line
             for i in range(3,len(data)):
                 x = text.pop()
-                text.append(x + data[i])
+                text.append(x + " " + data[i])
         temp2 = text.pop()
         if temp2.__contains__("@$"):
             temp3 = temp2.split('@$')
@@ -69,5 +69,5 @@ def srt_to_exel(srt_file, exel_file):
 
 
 # main
-# srt_to_exel('srt_files/Batman.Begins.2005.720p.BluRay.x264. YTS.MX-English.srt', 'xl_files/batman.xlsx')
+srt_to_exel('srt_files/Batman.Begins.2005.720p.BluRay.x264. YTS.MX-English.srt', 'xl_files/batman1.xlsx')
 # srt_to_exel('srt_files/Thor.Ragnarok.2017.WEB-DL.x264-FGT.srt', 'xl_files/thor.xlsx')
