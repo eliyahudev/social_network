@@ -1,7 +1,30 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import networkx as nx
+import graph_creator as gc
 import math
+# TODO change characters ':' in batman begin xl
 # 'xl_files/batman_begin.xlsx'
+
+
+def creatGraphAndCharacter(path, character):
+    df = pd.read_excel(path)
+    g = nx.MultiGraph()
+    character_degree = dict()
+    character_degree[0] = 0
+    T = 1
+    last = 0
+    for i in range(0, len(df) - 1):
+        g.add_edge(df['speaker'][i], df['speaker'][i+1])
+        if not str(df['speaker'][i + 1]).__eq__('nan') and not str(df['speaker'][i]).__eq__('nan'):
+            if nx.degree(g, character):
+                 character_degree[T] = nx.degree(g, character) / (2 * T)
+                 last = nx.degree(g, character)
+        else:
+            character_degree[T] = last/(2 * T)
+            # character_degree[T] = nx.degreeg, character)
+        T += 1
+    return character_degree
 
 
 def Convert(lst):
@@ -76,14 +99,29 @@ def evolving_graph_print(cw):
     plt.show()
     plt.clf()
 
+def avrage_degree_graph(path, characters):
+    for i in range(len(characters)):
+        avrage_degree_characters = creatGraphAndCharacter(path, characters[i])
+        plt.plot(avrage_degree_characters.keys(), avrage_degree_characters.values())
+    plt.legend(characters)
+    plt.show()
+    plt.clf()
 
-ce = CeClock('xl_files/thor.xlsx')
+
+def avrageDegreeMDiagram(path, characters):
+    for i in range(len(characters)):
+        avrage_degree_M_diagram = Mdiagram(creatGraphAndCharacter('xl_files/batman_begin.xlsx', characters[i]))
+        plt.plot(avrage_degree_M_diagram.keys(), avrage_degree_M_diagram.values())
+    plt.legend(characters)
+    plt.show()
+
+# ce = CeClock('xl_files/thor.xlsx')
 cw = CwClock('xl_files/thor.xlsx')
-evolving_graph_print(ce)
-evolving_graph_print(cw)
-M = Mdiagram(cw)
-evolving_graph_print(M)
-print(MdiagramMinMax(M))
+# evolving_graph_print(ce)
+# evolving_graph_print(cw)
+# M = Mdiagram(cw)
+# evolving_graph_print(M)
+# print(MdiagramMinMax(M))
 
 # ce = CeClock('xl_files/batman_begin.xlsx')
 # cw = CwClock('xl_files/batman_begin.xlsx')
@@ -92,3 +130,11 @@ print(MdiagramMinMax(M))
 # M = Mdiagram(cw)
 # evolving_graph_print(M)
 # print(MdiagramMinMax(M))
+
+# character_degree = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'BATMAN')
+# character_degree2 = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'RACHEL:')
+# character_degree3 = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'DUCARD:')
+# character_degree4 = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'GORDON')
+
+avrage_degree_graph('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
+avrageDegreeMDiagram('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
