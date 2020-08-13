@@ -31,7 +31,7 @@ def manipulate_page2():
                 df_thor['speaker'][x] = z
                 print(j,"; ", i, "; ", z,x)
         x+=1
-
+    # test
     for i in df_thor['speaker']:
         print(i)
     df_thor.to_excel('xl_files/test_xl1.xlsx', index=False)
