@@ -23,7 +23,7 @@ def create_ce_clock(path):
 
 
 
-def CeClock(path, character):
+def CeClock(path):
     df = pd.read_excel(path)
     actor = df['speaker']
     counter = 0
@@ -77,11 +77,18 @@ def evolving_graph_print(cw):
     plt.clf()
 
 
-# create_ce_clock('xl_files/batman_begin.xlsx')
-ce = CeClock('xl_files/batman_begin.xlsx', 'BATMAN')
-cw = CwClock('xl_files/batman_begin.xlsx')
+ce = CeClock('xl_files/thor.xlsx')
+cw = CwClock('xl_files/thor.xlsx')
+evolving_graph_print(ce)
 evolving_graph_print(cw)
 M = Mdiagram(cw)
 evolving_graph_print(M)
 print(MdiagramMinMax(M))
 
+# ce = CeClock('xl_files/batman_begin.xlsx')
+# cw = CwClock('xl_files/batman_begin.xlsx')
+# evolving_graph_print(ce)
+# evolving_graph_print(cw)
+# M = Mdiagram(cw)
+# evolving_graph_print(M)
+# print(MdiagramMinMax(M))
