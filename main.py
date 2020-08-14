@@ -1,8 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
-import graph_creator as gc
-import math
+import re
 # TODO change characters ':' in batman begin xl
 # 'xl_files/batman_begin.xlsx'
 
@@ -110,13 +109,39 @@ def avrage_degree_graph(path, characters):
 
 def avrageDegreeMDiagram(path, characters):
     for i in range(len(characters)):
+        # TODO normalize the graph
         avrage_degree_M_diagram = Mdiagram(creatGraphAndCharacter('xl_files/batman_begin.xlsx', characters[i]))
         plt.plot(avrage_degree_M_diagram.keys(), avrage_degree_M_diagram.values())
     plt.legend(characters)
     plt.show()
 
+
+def WordsCounter(path):
+    """count words appearance in the text
+    input: reference to exel file
+    output: None"""
+    ls = pd.read_excel(path)
+    # l = map()
+    df=pd.DataFrame(ls['text'].str.split() ,columns=['text'])
+    x = dict()
+    for i in df['text']:
+        if not str(i).__eq__('nan'):
+            for j in i:
+                if x.__contains__(j):
+                    x[j] += 1
+                else:
+                    x[j] = 1
+    z = sorted(x.items(),key=lambda x: x[1], reverse=True)
+    for i in range(len(z)):
+        print(z[10*i: 10*(i+1)])
+
+path = 'xl_files/batman_begin.xlsx'
+
+# part a,b
 # ce = CeClock('xl_files/thor.xlsx')
-cw = CwClock('xl_files/thor.xlsx')
+# cw = CwClock('xl_files/thor.xlsx')
+
+# pard c
 # evolving_graph_print(ce)
 # evolving_graph_print(cw)
 # M = Mdiagram(cw)
@@ -131,10 +156,23 @@ cw = CwClock('xl_files/thor.xlsx')
 # evolving_graph_print(M)
 # print(MdiagramMinMax(M))
 
-# character_degree = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'BATMAN')
-# character_degree2 = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'RACHEL:')
-# character_degree3 = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'DUCARD:')
-# character_degree4 = creatGraphAndCharacter('xl_files/batman_begin.xlsx', 'GORDON')
+# part d
+# avrage_degree_graph('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
 
-avrage_degree_graph('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
-avrageDegreeMDiagram('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
+# part e
+# avrageDegreeMDiagram('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
+
+# part f
+# WordsCounter('xl_files/batman_begin.xlsx')
+
+important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
+                   'Justice', 'crim', 'father','company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
+ls = pd.read_excel(path)
+# l = map()
+df = pd.DataFrame(ls['text'].str.split(), columns=['text'])
+x = dict()
+for i in df['text']:
+    if not str(i).__eq__('nan'):
+        for j in i:
+            if :
+                print(j)
