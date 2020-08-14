@@ -77,10 +77,30 @@ def CwClock(path):
     return Convert(cw)
 
 
-def Mdiagram(cw):
+def ClClock(path, important_words):
+    ls = pd.read_excel(path)
+    df = pd.DataFrame(ls['text'].str.split(), columns=['text'])
+    cl = dict()
+    # initial condition for cl[0]
+    if df['text'][0] in important_words:
+        cl[0] = 1
+    else:
+        cl[0] = 0
+    T = 1
+    for i in df['text']:
+        cl[T] = cl[T - 1]  # the is growing as a function of the for amount
+        if not str(i).__eq__('nan'):  # check if the row is not empty
+            for j in i:
+                if j in important_words: # count only word that belong to the important words chosen
+                    cl[T] += 1
+        T += 1
+    return cl
+
+
+def Mdiagram(cw, ce):
     s = len(cw) / cw[len(cw) - 1]
-    t = len(cw)
-    x = {j: s * i - j for i, j in zip(cw.values(), cw.keys())}
+    # t = len(cw)
+    x = {j: s * i - j for i, j in zip(cw.values(), ce.values())}
     return x
 
 
@@ -90,8 +110,9 @@ def MdiagramMinMax(my_dict):
     return (key_max, my_dict[key_max]), (key_min, my_dict[key_min])
 
 
-def evolving_graph_print(cw):
-    plt.plot(cw.keys(),cw.values())
+def evolving_graph_print(cw_list):
+    for cw in cw_list:
+        plt.plot(cw.keys(),cw.values())
     plt.xlabel(['event'])
     plt.ylabel(['time'])
     plt.legend(['Cw'])
@@ -107,10 +128,10 @@ def avrage_degree_graph(path, characters):
     plt.clf()
 
 
-def avrageDegreeMDiagram(path, characters):
+def avrageDegreeMDiagram(path, characters, ce):
     for i in range(len(characters)):
         # TODO normalize the graph
-        avrage_degree_M_diagram = Mdiagram(creatGraphAndCharacter('xl_files/batman_begin.xlsx', characters[i]))
+        avrage_degree_M_diagram = Mdiagram(creatGraphAndCharacter(path, characters[i]), ce)
         plt.plot(avrage_degree_M_diagram.keys(), avrage_degree_M_diagram.values())
     plt.legend(characters)
     plt.show()
@@ -135,44 +156,88 @@ def WordsCounter(path):
     for i in range(len(z)):
         print(z[10*i: 10*(i+1)])
 
-path = 'xl_files/batman_begin.xlsx'
+# def abc():
+# TODO REMOVE IF NOT IMPORTANT
 
+#     ls = pd.read_excel(path)
+#     df = pd.DataFrame(ls['text'].str.split(), columns=['text'])
+#     cl = dict()
+#     if df['text'][0] in important_words:
+#         cl[0] = 1
+#     else:
+#         cl[0] = 0
+#     T = 1
+#     for i in df['text']:
+#         cl[T] = cl[T - 1]
+#         if not str(i).__eq__('nan'):
+#             for j in i:
+#                 if j in important_words:
+#                     cl[T] += 1
+#         print(cl[T])
+#         T += 1
+#     evolving_graph_print([cl])
+#
+#     M = dict()
+#     T = 0
+#     for i in df['text']:
+#         if not str(i).__eq__('nan'):
+#             while T < len(cl):
+#                 M[T] = -(cl[T] - ce[T])
+#                 T += 1
+#
+#     evolving_graph_print([M])
+
+
+# inputs
+path = 'xl_files/batman_begin.xlsx'
+second_path = 'xl_files/thor.xlsx'
+heroes = ['BATMAN', 'DUCARD:']
+important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
+                   'Justice', 'crim', 'father','company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
+# answers
 # part a,b
-# ce = CeClock('xl_files/thor.xlsx')
-# cw = CwClock('xl_files/thor.xlsx')
+ce = CeClock(path)
+cw = CwClock(path)
+second_cw = CwClock(second_path)
 
 # pard c
-# evolving_graph_print(ce)
-# evolving_graph_print(cw)
-# M = Mdiagram(cw)
-# evolving_graph_print(M)
-# print(MdiagramMinMax(M))
+# evolving_graph_print([ce])
+# evolving_graph_print([cw])
+# M = Mdiagram(cw, ce)
+# evolving_graph_print([M])
 
-# ce = CeClock('xl_files/batman_begin.xlsx')
-# cw = CwClock('xl_files/batman_begin.xlsx')
-# evolving_graph_print(ce)
-# evolving_graph_print(cw)
-# M = Mdiagram(cw)
-# evolving_graph_print(M)
+# print(MdiagramMinMax(M))
+# ce = CeClock(path)
+# cw = CwClock(path)
+# evolving_graph_print([ce])
+# evolving_graph_print([cw])
+# M = Mdiagram(cw, ce)
+# evolving_graph_print([M])
 # print(MdiagramMinMax(M))
 
 # part d
-# avrage_degree_graph('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
+# avrage_degree_graph(path, heroes)
 
 # part e
-# avrageDegreeMDiagram('xl_files/batman_begin.xlsx', ['BATMAN', 'DUCARD:'])
+# avrageDegreeMDiagram(path, heroes, ce)
 
 # part f
-# WordsCounter('xl_files/batman_begin.xlsx')
+# WordsCounter(path)
+# evolving_graph_print(cl)
 
-important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
-                   'Justice', 'crim', 'father','company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
-ls = pd.read_excel(path)
-# l = map()
-df = pd.DataFrame(ls['text'].str.split(), columns=['text'])
-x = dict()
-for i in df['text']:
-    if not str(i).__eq__('nan'):
-        for j in i:
-            if :
-                print(j)
+# part g
+# evolving_graph_print(Mdiagram(cl, ce))
+
+# part h
+evolving_graph_print([cw ,second_cw])
+evolving_graph_print([Mdiagram(cw, second_cw)])
+
+# M = dict()
+# T = 0
+# for i in df['text']:
+#     if not str(i).__eq__('nan'):
+#         while T < min(len(cl),len(ce)):
+#             M[T] = cl[T] - ce[T]
+#             T += 1
+#
+# evolving_graph_print([M])
