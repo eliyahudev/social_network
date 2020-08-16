@@ -59,6 +59,8 @@ def CeClock(path):
         counter += 1
         ce[y] = counter
         y += 1
+    df['ce'] = ce
+    df.to_excel(path, index=False)
     return ce
 
 
@@ -104,7 +106,7 @@ def ClClock(path, important_words):
 def Mdiagram(cw, ce):
     len_cw = len(cw)
     len_ce = len(ce)
-    hefresh = len_cw - len_ce
+    # hefresh = len_cw - len_ce
     # if hefresh != 0:
     #     if hefresh > 0:
     #         for i in range(hefresh):
@@ -209,11 +211,13 @@ def WordsCounter(path):
 
 
 # inputs
-path = 'xl_files/batman_begin.xlsx'
-second_path = 'xl_files/thor.xlsx'
+second_path = 'xl_files/batman_begin.xlsx'
+path = 'xl_files/thor.xlsx'
 heroes = ['BATMAN', 'DUCARD:']
-important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
-                   'Justice', 'crim', 'father','company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
+important_words = ['Asgard','Hulk','Thor','place','people','Odin','stop','Ragnarok',
+                   'Thunder','hammer','Hela','God','death','time','think','kind','past','thank','honored','you']
+# important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
+#                    'Justice', 'crim', 'father','company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
 # answers
 # part a,b
 ce = CeClock(path)
@@ -257,8 +261,9 @@ second_cw = CwClock(second_path)
 # evolving_graph_print(cl)
 
 # part g
-# evolving_graph_print([Mdiagram(cl, ce)])
-
+print('Part g')
+evolving_graph_print([Mdiagram(cl, ce)])
+print()
 # part h
 # evolving_graph_print([normalizeClock(second_cw), normalizeClock(cw)])
 # evolving_graph_print([Mdiagram(normalizeClock(second_cw), normalizeClock(cw))])
