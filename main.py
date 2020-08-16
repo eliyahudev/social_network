@@ -60,6 +60,3 @@ ax.set_title('Surface plot')
 # show plot
 plt.show()
 
-# df = pd.DataFrame(data=matrix.tolist())
-# # print(df)
-# df.to_excel('xl_files/batman_begin_surfaces.xlsx', sheet_name= 'BATMAN', index=False)

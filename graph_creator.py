@@ -1,8 +1,9 @@
-import networkx as nx
-import pandas as pd
-import matplotlib.pyplot as plt
 import re
+
+import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
+import pandas as pd
 
 
 def unionSpeakers(speaker):
@@ -56,7 +57,7 @@ def count_edges_and_nodes(g):
         output: integer tuple with the result"""
     adj_met = nx.to_numpy_matrix(g)
     nodes_num = len(adj_met)
-    edges_num = (adj_met @ np.ones((len(adj_met))).transpose())/2 @ np.ones(len(adj_met)).transpose()
+    edges_num = (adj_met @ np.ones((len(adj_met))).transpose()) / 2 @ np.ones(len(adj_met)).transpose()
     return nodes_num, int(edges_num)
 
 
@@ -70,7 +71,7 @@ def printGraph(g):
         'node_size': 100,
         # 'font_color': '#d3aa78',
     }
-    nx.draw(g, with_labels=True,**options)
+    nx.draw(g, with_labels=True, **options)
     plt.show()
 
 
@@ -86,12 +87,14 @@ def get_centrality(movie_name, path):
     for graph_type, graph_name in zip(g, name):
         g1 = thorCreatGraph(graph_type, path)
         print(graph_name)
-        print('closeness_centrality: ', sorted(nx.closeness_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
-        print('degree_centrality: ', sorted(nx.degree_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
-        print('pagerank algorithm: ', sorted(nx.pagerank_numpy(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
+        print('closeness_centrality: ',
+              sorted(nx.closeness_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+        print('degree_centrality: ', sorted(nx.degree_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+        print('pagerank algorithm: ', sorted(nx.pagerank_numpy(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
         if graph_name.__eq__('DiGraph()') or graph_name.__eq__('Graph()'):
-            print('betweenness_centrality: ', sorted(nx.betweenness_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
-            print('eigenvector_centrality: ', sorted(nx.eigenvector_centrality(g1).items(),key=lambda x: x[1], reverse=True)[0:4])
+            print('betweenness_centrality: ',
+                  sorted(nx.betweenness_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+            print('eigenvector_centrality: ',
+                  sorted(nx.eigenvector_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
         print()
     print()
-

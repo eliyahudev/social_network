@@ -33,7 +33,7 @@ def avrageDigreeCentrality(path, character, end_time, start_time, character_degr
 # inputs
 path = 'xl_files/batman_begin.xlsx'
 heroes = ['BATMAN']
-# heroes = ['BATMAN', 'DUCARD', 'RACHEL', 'ALFRED']
+# heroes = ['BATMAN', 'DUCARD', 'RACHEL', 'GORDON']
 
 ce = Question4.CeClock(path)
 cw = Question4.CwClock(path)
@@ -48,19 +48,25 @@ ax = plt.axes(projection='3d')
 
 df = pd.read_excel(path)
 # print(df['speaker'].unique())
-matrix = np.zeros((len(ce)-1, len(ce)-1))
-for j in range(100):
-    avrageDigreeCentrality(path, 'DUCARD', j, len(ce)-1, matrix[len(matrix) - 1 - j], df['speaker'].unique())
-    print('\rcreating surface [%f%%]' % (j/5.00), end="")
-surf = ax.plot_surface(x, y, matrix)
-fig.colorbar(surf, ax=ax,
-             shrink=0.5, aspect=5)
+matrix = np.zeros(5)
+# matrix = np.zeros((len(ce)-1, len(ce)-1))
+# for j in range(len(ce)-1):
+#     avrageDigreeCentrality(path, 'RACHEL', j, len(ce)-1, matrix[len(matrix) - 1 - j], df['speaker'].unique())
+#     print('\rcreating surface [%f%%]' % (j/(len(ce)-1)*100), end="")
+# surf = ax.plot_surface(x, y, matrix)
+# fig.colorbar(surf, ax=ax,
+#              shrink=0.5, aspect=5)
+# #
+# ax.set_title('Surface plot')
+# #
+# # show plot
+# plt.show()
 #
-ax.set_title('Surface plot')
-#
-# show plot
-plt.show()
+df1 = pd.DataFrame(data=matrix.tolist())
+# # print(df)
+df1.to_excel('xl_files/batman_begin_surface.xlsx', 'BAT', engine='openpyxl', index=False)
 
 
-# print(matrix)
-# df.to_excel('xl_files/batman_begin_surfaces.xlsx', sheet_name= 'BATMAN', index=False)
+
+# print
+# df.to n_surfaces.xlsx', sheet_name= 'BATMAN', index=False)

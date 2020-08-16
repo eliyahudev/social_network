@@ -1,13 +1,15 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
-import random
+import pandas as pd
+
+
 # TODO change characters ':' in batman begin xl
 
 
 def avrageDigreeCentrality(path, character, time):
     df = pd.read_excel(path)
     g = nx.MultiGraph()
+    g.add_nodes_from(df['speaker'].unique().tolist())
     character_degree = dict()
     character_degree[0] = 0
     T = 1
@@ -15,19 +17,21 @@ def avrageDigreeCentrality(path, character, time):
     if not time:
         time = len(df) - 1
     for i in range(0, time):
-        g.add_edge(df['speaker'][i], df['speaker'][i+1])
+        g.add_edge(df['speaker'][i], df['speaker'][i + 1])
         if not str(df['speaker'][i + 1]).__eq__('nan') and not str(df['speaker'][i]).__eq__('nan'):
             if nx.degree(g, character):
-                 character_degree[T] = nx.degree(g, character) / (2 * T)
-                 last = nx.degree(g, character)
+                character_degree[T] = nx.degree(g, character) / (2 * T)
+                last = nx.degree(g, character)
+            else:
+                character_degree[T] = last / (2 * T)
         else:
-            character_degree[T] = last/(2 * T)
+            character_degree[T] = last / (2 * T)
         T += 1
     return character_degree
 
 
 def Convert(lst):
-    res_dct = {i : lst[i] for i in range(0, len(lst))}
+    res_dct = {i: lst[i] for i in range(0, len(lst))}
     return res_dct
 
 
@@ -45,7 +49,7 @@ def create_ce_clock(path):
 
 
 def normalizeClock(clock):
-    new_clock = {i / (len(clock) - 1): j / clock[len(clock)-1] for i,j in zip(clock.keys(), clock.values())}
+    new_clock = {i / (len(clock) - 1): j / clock[len(clock) - 1] for i, j in zip(clock.keys(), clock.values())}
     return new_clock
 
 
@@ -72,7 +76,7 @@ def CwClock(path):
     j = 0
     for i in w:
         # print(i, j, i+j)
-        cw.append(i+j)
+        cw.append(i + j)
         if not str(i).__eq__('nan'):
             j += i
         else:
@@ -97,7 +101,7 @@ def ClClock(path, important_words):
         cl[T] = cl[T - 1]  # the is growing as a function of the for amount
         if not str(i).__eq__('nan'):  # check if the row is not empty
             for j in i:
-                if j in important_words: # count only word that belong to the important words chosen
+                if j in important_words:  # count only word that belong to the important words chosen
                     cl[T] += 1
         T += 1
     return cl
@@ -165,7 +169,7 @@ def WordsCounter(path):
     output: None"""
     ls = pd.read_excel(path)
     # l = map()
-    df=pd.DataFrame(ls['text'].str.split() ,columns=['text'])
+    df = pd.DataFrame(ls['text'].str.split(), columns=['text'])
     x = dict()
     for i in df['text']:
         if not str(i).__eq__('nan'):
@@ -174,9 +178,10 @@ def WordsCounter(path):
                     x[j] += 1
                 else:
                     x[j] = 1
-    z = sorted(x.items(),key=lambda x: x[1], reverse=True)
+    z = sorted(x.items(), key=lambda x: x[1], reverse=True)
     for i in range(len(z)):
-        print(z[10*i: 10*(i+1)])
+        print(z[10 * i: 10 * (i + 1)])
+
 
 # def abc():
 # TODO REMOVE IF NOT IMPORTANT
@@ -211,13 +216,14 @@ def WordsCounter(path):
 
 
 # inputs
-second_path = 'xl_files/batman_begin.xlsx'
-path = 'xl_files/thor.xlsx'
-heroes = ['BATMAN', 'DUCARD:']
-important_words = ['Asgard','Hulk','Thor','place','people','Odin','stop','Ragnarok',
-                   'Thunder','hammer','Hela','God','death','time','think','kind','past','thank','honored','you']
-# important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
-#                    'Justice', 'crim', 'father','company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
+path = 'xl_files/batman_begin.xlsx'
+second_path = 'xl_files/thor.xlsx'
+heroes = ['BATMAN', 'DUCARD']
+# heroes = ['THOR', 'HELA']
+# important_words = ['Asgard','Hulk','Thor','place','people','Odin','stop','Ragnarok',
+#                    'Thunder','hammer','Hela','God','death','time','think','kind','past','thank','honored','you']
+important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
+                   'Justice', 'crim', 'father', 'company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
 # answers
 # part a,b
 ce = CeClock(path)
@@ -261,9 +267,9 @@ second_cw = CwClock(second_path)
 # evolving_graph_print(cl)
 
 # part g
-print('Part g')
-evolving_graph_print([Mdiagram(cl, ce)])
-print()
+# print('Part g')
+# evolving_graph_print([Mdiagram(cl, ce)])
+
 # part h
 # evolving_graph_print([normalizeClock(second_cw), normalizeClock(cw)])
 # evolving_graph_print([Mdiagram(normalizeClock(second_cw), normalizeClock(cw))])
