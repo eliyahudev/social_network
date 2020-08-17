@@ -208,10 +208,10 @@ important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falc
 # answers
 # part a,b
 ce = CeClock(path)
-second_ce = CeClock(second_path)
+# second_ce = CeClock(second_path)
 cw = CwClock(path)
 cl = ClClock(path, important_words)
-second_cw = CwClock(second_path)
+# second_cw = CwClock(second_path)
 
 # pard c
 # evolving_graph_print([ce])

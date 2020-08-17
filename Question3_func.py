@@ -42,7 +42,10 @@ def voting(g,path, characters, ancors):
 
     k = 0
     for i in edge_matrix:
-        edge_matrix[k] = (i / sum(i))
+        if sum(i):
+            edge_matrix[k] = (i / sum(i))
+        else:
+            edge_matrix[k] = 0
         k += 1
 
     for i in range(5000):
@@ -83,24 +86,31 @@ def translate_voting(g ,path, characters, ancors, dict_characters):
     return d
 
 
-def mst_partition(g2, vornoi_partition):
-    for i in vornoi_partition.values():
-        g4 = g2.subgraph(i)
-        g5 = nx.minimum_spanning_tree(g4)
-        paintGraph(g5, colors.pop())
+def mst_partition(G, vornoi_partition, colors):
+    red_edges = list(vornoi_partition)
+    edge_colours = ['black' if not edge in red_edges else 'red'
+                    for edge in G.edges()]
+    black_edges = [edge for edge in G.edges() if edge not in red_edges]
+
+    # Need to create a layout when doing
+    # separate calls to draw nodes and edges
+    pos = nx.spring_layout(G)
+    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size=500)
+    nx.draw_networkx_labels(G, pos)
+    nx.draw_networkx_edges(G, pos, edgelist=red_edges, edge_color='r', arrows=True)
+    nx.draw_networkx_edges(G, pos, edgelist=black_edges, arrows=False)
     plt.show()
 
 
 def paintGraph(g, color):
     """vizualization of a graph using mathplotlib library
-    input: networkx graph
+    input: color (string)
     output: None"""
 
     options = {
-        'node_color': 'gray',
+        'node_color': color,
         'edge_color': color,
         'node_size': 100,
-        # 'font_color': '#d3aa78',
     }
     nx.draw(g, with_labels=True, **options)
 
@@ -126,13 +136,13 @@ ancors = [0, 1, 4]
 
 # # part d
 # print('part d:')
-# vornoi_partition = vornoi(g, path, characters, center_nodes)
+vornoi_partition = vornoi(g, path, characters, center_nodes)
 # print(vornoi_partition)
 # vot_part = translate_voting(g, path, characters, ancors, dict_characters)
 # print(vot_part)
-# g2 = createSubGraph(g, path, characters)
+g2 = createSubGraph(g, path, characters)
 # print(nx.voterank(g2, 2))
 # print('modularity: ',nx.modularity_spectrum(g2))
 
 # # part g
-# mst_partition(g2, vornoi_partition)
+mst_partition(g2, vornoi_partition, colors)
