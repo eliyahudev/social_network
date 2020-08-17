@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import graph_creator as gc
 
 def createGraph(graph, path):
     """create AB-graph for Thor's movie
@@ -17,7 +18,7 @@ def createGraph(graph, path):
 
 def createSubGraph(graph, path, characters_list):
     g = createGraph(graph, path)
-    g2 = nx.MultiGraph(nx.subgraph(g, characters_list))
+    g2 = nx.subgraph(g, characters_list)
     return g2
 
 
@@ -81,6 +82,15 @@ def translate_voting(g ,path, characters, ancors, dict_characters):
             d[dict_characters[list(i)[0]]].append(dict_characters[j])
     return d
 
+
+def mst_partition(g2, vornoi_partition):
+    for i in vornoi_partition.values():
+        g4 = g2.subgraph(i)
+        g5 = nx.minimum_spanning_tree(g4)
+        paintGraph(g5, colors.pop())
+    plt.show()
+
+
 def paintGraph(g, color):
     """vizualization of a graph using mathplotlib library
     input: networkx graph
@@ -96,33 +106,33 @@ def paintGraph(g, color):
 
 
 
-g = nx.MultiGraph()
+g = nx.MultiDiGraph()
 colors = ['green', 'black', 'blue', 'red']
 
-path = 'xl_files/batman_begin.xlsx'
-characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
-dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
-                   7: 'CRANE', 8:' EARLE', 9: 'FLASS'}
-center_nodes = {'BATMAN', 'DUCARD', 'FALCONE'}
-ancors = [0, 3, 4]
+# movie selected:
+# path = 'xl_files/batman_begin.xlsx'
+# characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
+# dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
+#                    7: 'CRANE', 8:' EARLE', 9: 'FLASS'}
+# center_nodes = {'BATMAN', 'DUCARD', 'FALCONE'}
+# ancors = [0, 3, 4]
 
-# path = 'xl_files/thor.xlsx'
-# characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
-# center_nodes = {'THOR', 'HELA', 'HULK'}
-# ancors = [0, 1, 4]
+path = 'xl_files/thor.xlsx'
+characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
+dict_characters = {0: 'THOR', 1: 'HELA', 2: 'LOKI', 3: 'VALKYRIE', 4: 'HULK', 5: 'GRANDMASTER', 6: 'SKURGE',
+                   7: 'HEIMDALL', 8: 'SURTUR', 9: 'ODIN'}
+center_nodes = {'THOR', 'HELA', 'HULK'}
+ancors = [0, 1, 4]
 
-# part d
+# # part d
 # print('part d:')
-vornoi_partition = vornoi(g, path, characters, center_nodes)
-print(vornoi_partition)
-vot_part = translate_voting(g, path, characters, ancors, dict_characters)
-print(vot_part)
+# vornoi_partition = vornoi(g, path, characters, center_nodes)
+# print(vornoi_partition)
+# vot_part = translate_voting(g, path, characters, ancors, dict_characters)
+# print(vot_part)
+# g2 = createSubGraph(g, path, characters)
+# print(nx.voterank(g2, 2))
+# print('modularity: ',nx.modularity_spectrum(g2))
 
-# part g
-g2 = createSubGraph(g, path, characters)
-for i in vot_part.values():
-    g4 = g2.subgraph(i)
-    g5 = nx.minimum_spanning_tree(g4)
-    paintGraph(g5, colors.pop())
-plt.show()
-
+# # part g
+# mst_partition(g2, vornoi_partition)

@@ -148,7 +148,7 @@ def evolving_graph_print(cw_list):
 
 def avrage_degree_graph(path, characters):
     for i in range(len(characters)):
-        avrage_degree_characters = avrageDigreeCentrality(path, characters[i])
+        avrage_degree_characters = avrageDigreeCentrality(path, characters[i], None)
         plt.plot(avrage_degree_characters.keys(), avrage_degree_characters.values())
     plt.legend(characters)
     plt.show()
@@ -156,6 +156,17 @@ def avrage_degree_graph(path, characters):
 
 
 def avrageDegreeMDiagram(path, characters, ce):
+    """vizualize M diagram for multiple characters at
+       the same plate,
+       parameters:
+       ----------
+       path: reference to xl file
+       characters: list of characters to print
+       ce: clock to compere to
+       return:
+       -------
+       None
+       """
     for i in range(len(characters)):
         avrage_degree_M_diagram = Mdiagram(avrageDigreeCentrality(path, characters[i], None), ce)
         plt.plot(avrage_degree_M_diagram.keys(), avrage_degree_M_diagram.values())
@@ -183,42 +194,12 @@ def WordsCounter(path):
         print(z[10 * i: 10 * (i + 1)])
 
 
-# def abc():
-# TODO REMOVE IF NOT IMPORTANT
-
-#     ls = pd.read_excel(path)
-#     df = pd.DataFrame(ls['text'].str.split(), columns=['text'])
-#     cl = dict()
-#     if df['text'][0] in important_words:
-#         cl[0] = 1
-#     else:
-#         cl[0] = 0
-#     T = 1
-#     for i in df['text']:
-#         cl[T] = cl[T - 1]
-#         if not str(i).__eq__('nan'):
-#             for j in i:
-#                 if j in important_words:
-#                     cl[T] += 1
-#         print(cl[T])
-#         T += 1
-#     evolving_graph_print([cl])
-#
-#     M = dict()
-#     T = 0
-#     for i in df['text']:
-#         if not str(i).__eq__('nan'):
-#             while T < len(cl):
-#                 M[T] = -(cl[T] - ce[T])
-#                 T += 1
-#
-#     evolving_graph_print([M])
-
-
 # inputs
 path = 'xl_files/batman_begin.xlsx'
 second_path = 'xl_files/thor.xlsx'
-heroes = ['BATMAN', 'DUCARD']
+# heroes = ['BATMAN', 'DUCARD']
+heroes = ['BATMAN', 'DUCARD', 'RACHEL', 'ALFRED']
+
 # heroes = ['THOR', 'HELA']
 # important_words = ['Asgard','Hulk','Thor','place','people','Odin','stop','Ragnarok',
 #                    'Thunder','hammer','Hela','God','death','time','think','kind','past','thank','honored','you']
