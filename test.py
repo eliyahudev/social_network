@@ -1,76 +1,53 @@
+import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 import pandas as pd
-import Question3_func as Q3
 
-def createGraph(graph, path):
-    """create AB-graph for Thor's movie
-    input: networkx graph, reference to script
-    output: networkx graph"""
-    df = pd.read_excel(path)  # get data from xlsx file
-    speaker = df['speaker']
-    for i in range(len(speaker) - 2):
-        if speaker[i] and speaker[i + 1]:
-            graph.add_edge(speaker[i], speaker[i + 1])
-    return graph
+a0, a1, a2, a3 = [], [], [], []
+x1, x2, x3, x0 = [], [], [], []
+y0, y1, y2, y3 = [], [], [], []
 
 
-def createSubGraph(graph, path, characters_list):
-    g = createGraph(graph, path)
-    g2 = nx.subgraph(g, characters_list)
-    return g2
+def avrageDigreeCentrality(characters, end_time, start_time):
+    df = pd.read_excel(path)
+    node_list = df['speaker'].tolist()
+    character_degree = len(node_list)
+    character_degree_mt = np.zeros((character_degree))
+    g = nx.MultiGraph()
+    g.add_nodes_from(node_list)
 
-# main
-g = nx.Graph()
-colors = ['green', 'black', 'blue', 'red']
+    T = 1
 
-# movie selected:
+    for i in range(start_time + 1, end_time - 1):
+        g.add_edge(node_list[i], node_list[i + 1])
+        d = {k: nx.degree_centrality(g)[k] for k in characters}
+        x = max(d, key=d.get)
+        if str(x).__eq__(characters[0]):
+            a0.append(10), x0.append(i), y0.append(start_time)
+        elif str(x).__eq__(characters[1]):
+            a1.append(10), x1.append(i), y1.append(start_time)
+        elif str(x).__eq__(characters[2]):
+            a2.append(10), x2.append(i), y2.append(start_time)
+        else:
+            a3.append(10), x3.append(i), y3.append(start_time)
+        # T += 1
+    return 1
 
-# for batman_begin-
-# path = 'xl_files/batman_begin.xlsx'
-# characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
-# dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
-#                    7: 'CRANE', 8:' EARLE', 9: 'FLASS'}
-# center_nodes = {'BATMAN', 'DUCARD', 'FALCONE'}
-# ancors = [0, 3, 4]
 
-# for thor ragnarok
 path = 'xl_files/thor.xlsx'
-characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
-dict_characters = {0: 'THOR', 1: 'HELA', 2: 'LOKI', 3: 'VALKYRIE', 4: 'HULK', 5: 'GRANDMASTER', 6: 'SKURGE',
-                   7: 'HEIMDALL', 8: 'SURTUR', 9: 'ODIN'}
-center_nodes = {'THOR', 'HELA', 'HULK'}
-ancors = [0, 1, 4]
+characters = ['THOR', 'HELA', 'HULK', 'GRANDMASTER']
+start = 1
+for start in range(1466):
+    thor = avrageDigreeCentrality(characters, 1466, start)
+    print('\rcreating surface [%.2f%%]' % (start / (1466) * 100), end="")
 
-
-
-print("=============================part d=============================")
-# Different algorithms for calculating partitioning
-actorGraph = createSubGraph(g, path,characters)
-
-# vornoi
-print('vornoi_partition: ', Q3.vornoi(g, path, characters, center_nodes))
-
-# voting
-print('groups:', nx.voterank(createSubGraph(g, path, characters), 2))
-print('voting:',Q3.translate_voting(g, path, characters, ancors, dict_characters))
-
-# Modularity:
-print("Modularity: " + str(nx.algorithms.community.modularity_max.greedy_modularity_communities(actorGraph)))
-
-# # Centrality
-comp = nx.algorithms.community.centrality.girvan_newman(actorGraph)
-for x in comp:
-    print("Centrality: " + str(x))
-    break
-#
-# # Clique Percolation
-print("CliquePercolation: " + str(list(nx.algorithms.community.kclique.k_clique_communities(actorGraph,2))))
-#
-# Vertex Moving:
-print("Vertex Moving: " + str(list(nx.algorithms.community.asyn_fluid.asyn_fluidc(actorGraph, 2))))
-#
-# # Kernighan–Lin:
-print("Kernighan–Lin algorithm: " + str(list(nx.algorithms.community.kernighan_lin.kernighan_lin_bisection(actorGraph))))
-
-print('part g')
-Q3.mst_partition(actorGraph, Q3.vornoi(g, path, characters, center_nodes), colors)
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(x0, y0,  c='r')
+ax.scatter(x1, y1,  c='b')
+ax.scatter(x2, y2,  c='g')
+ax.scatter(x3, y3,  c='y')
+plt.show()
+# print('\r')
+# print(hela, end='\n\r')
+# print(hulk, end='\n\r')

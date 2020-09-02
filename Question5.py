@@ -67,14 +67,15 @@ def digree_centrality_surface(path, heroes):
             print('\rcreating surface [%.2f%%]' % (k / (ln * (character_degree - 1)) * 100), end="")
             k += 1
         matrix += np.flip(matrix) * -1
-        print(matrix)
+        # Creating plot1
+        ax.scatter3D(len(matrix), len(matrix), matrix, color= colors.pop())
     #     surf = ax.plot_surface(x, y, matrix, color=colors.pop())
     #     fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
     # #
-    # ax.set_title('Surface plot')
+    ax.set_title('Surface plot')
     # #
     # # show plot
-    # plt.show()
+    plt.show()
 
 
 # main
@@ -88,8 +89,8 @@ colors = ['b', 'g', 'r', 'm']
 
 
 path = 'xl_files/thor.xlsx'
-heroes = ['HELA', 'HULK']
-heroes = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
+heroes = ['HELA']
+# heroes = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
 
 
 # avrage_degree_graph(path, heroes)
