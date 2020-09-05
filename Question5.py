@@ -1,97 +1,80 @@
-
 import matplotlib.pyplot as plt
 import networkx as nx
-import  pandas as pd
-from mpl_toolkits import mplot3d
-import numpy as np
+import pandas as pd
+
+a0, a1, a2, a3 = [], [], [], []
+x1, x2, x3, x0 = [], [], [], []
+y0, y1, y2, y3 = [], [], [], []
+
+a0n, a1n, a2n, a3n = [], [], [], []
+x1n, x2n, x3n, x0n = [], [], [], []
+y0n, y1n, y2n, y3n = [], [], [], []
 
 
-def avrageDigreeCentrality(node_list, character, end_time, start_time, character_degree_mat):
+def avrageDigreeCentrality(g, characters, end_time, start_time):
+    for i in range(start_time + 1, end_time - 1):
+        g.add_edge(node_list[i], node_list[i + 1])
+        deg_cent = nx.degree_centrality(g)
+        d = {k: deg_cent[k] for k in characters}
+        x = max(d, key=d.get)
+        z = min(d, key=d.get)
 
-    if end_time - start_time < 0:
-        return avrageDigreeCentrality(node_list, character, start_time, end_time, character_degree_mat) * -1
-    last = 0
-    g = nx.MultiGraph()
-    g.add_nodes_from(node_list)
-
-    T = 1
-
-    for i in range(start_time+1, end_time-1):
-        g.add_edge(node_list[i], node_list[i+1])
-        if not node_list[i + 1].__eq__('nan') and not node_list[i].__eq__('nan'):
-            if node_list[i + 1].__eq__(character) or node_list[i].__eq__(character):
-                character_degree_mat[T + start_time] = nx.degree_centrality(g)[character]
-                last = character_degree_mat[T + start_time]
-            else:
-                character_degree_mat[T + start_time] = last
+        # get the highest
+        if str(x).__eq__(characters[0]):
+            x0.append(i), y0.append(start_time)
+        elif str(x).__eq__(characters[1]):
+            x1.append(i), y1.append(start_time)
+        elif str(x).__eq__(characters[2]):
+            x2.append(i), y2.append(start_time)
         else:
-            character_degree_mat[T + start_time] = last
-        T += 1
-    # character_degree_mat[T + start_time] = last
-    return character_degree_mat
+            x3.append(i), y3.append(start_time)
 
-
-def avrage_degree_graph(path, characters):
-    df = pd.read_excel(path)
-    node_list = df['speaker'].tolist()
-    character_degree = len(node_list)
-    for i in range(len(characters)):
-        avrage_degree_characters = avrageDigreeCentrality(
-            node_list, characters[i], character_degree, 300, np.zeros((character_degree)))
-        # print(avrage_degree_characters)
-        plt.plot(avrage_degree_characters)
-    plt.legend(characters)
-    plt.show()
-    plt.clf()
-
-
-def digree_centrality_surface(path, heroes):
-    colors = ['b', 'g', 'r', 'm']
-    df = pd.read_excel(path)
-    node_list = df['speaker'].tolist()
-    character_degree = len(node_list)
-    matrix = np.zeros((character_degree - 1, character_degree - 1))
-
-    # # Creating figyre
-    fig = plt.figure(figsize=(10, 5))
-    ax = plt.axes(projection='3d')
-    # Creating dataset
-    x = np.outer(np.linspace(0, character_degree - 1, character_degree - 1), np.ones(character_degree - 1))
-    y = x.copy().T  # transpose
-    ln = len(heroes)
-    k = 0
-    for i in heroes:
-        for j in range(character_degree - 1):
-            avrageDigreeCentrality(
-                node_list, i, character_degree, j, matrix[len(matrix) - 1 - j])
-            print('\rcreating surface [%.2f%%]' % (k / (ln * (character_degree - 1)) * 100), end="")
-            k += 1
-        matrix += np.flip(matrix) * -1
-        # Creating plot1
-        ax.scatter3D(len(matrix), len(matrix), matrix, color= colors.pop())
-    #     surf = ax.plot_surface(x, y, matrix, color=colors.pop())
-    #     fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
-    # #
-    ax.set_title('Surface plot')
-    # #
-    # # show plot
-    plt.show()
-
-
-# main
-# input
-colors = ['b', 'g', 'r', 'm']
-
-# inputs
-# path = 'xl_files/batman_begin.xlsx'
-# heroes = ['BATMAN']
-# heroes = ['FALCONE', 'DUCARD', 'RACHEL', 'GORDON']
+        # get the lowest
+        if str(z).__eq__(characters[0]):
+            x0n.append(start_time), y0n.append(i)
+        elif str(z).__eq__(characters[1]):
+            x1n.append(start_time), y1n.append(i)
+        elif str(z).__eq__(characters[2]):
+            x2n.append(start_time), y2n.append(i)
+        else:
+            x3n.append(start_time), y3n.append(i)
 
 
 path = 'xl_files/thor.xlsx'
-heroes = ['HELA']
-# heroes = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
+movie_name = 'THOR RAGNAROCK'
+characters = ['LOKI', 'HELA', 'HULK', 'GRANDMASTER']
+movie_length = 1560
 
+# path = 'xl_files/batman_begin.xlsx'
+# movie_name = 'BATMAN BEGIN'
+# characters = ['BATMAN', 'DUCARD', 'RACHEL', 'FALCONE']
+# movie_length = 1466
 
-# avrage_degree_graph(path, heroes)
-digree_centrality_surface(path, heroes)
+df = pd.read_excel(path)
+node_list = df['speaker'].tolist()
+
+for start in range(movie_length):
+    g = nx.MultiGraph()
+    g.add_nodes_from(node_list)
+    avrageDigreeCentrality(g, characters, movie_length, start)
+    print('\rcreating surface [%.2f%%]' % (start / (movie_length) * 100), end="")
+
+# plot degree centrality surface
+fig = plt.figure(movie_name)
+ax = fig.add_subplot(111)
+
+# draw the highes value
+ax.scatter(x0, y0, c='r')
+ax.scatter(x1, y1, c='b')
+ax.scatter(x2, y2, c='g')
+ax.scatter(x3, y3, c='y')
+
+# draw the lowest value
+ax.scatter(x0n, y0n, c='r')
+ax.scatter(x1n, y1n, c='b')
+ax.scatter(x2n, y2n, c='g')
+ax.scatter(x3n, y3n, c='y')
+
+# show
+# plt.legend(characters)
+plt. show()
