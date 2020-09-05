@@ -40,15 +40,15 @@ def avrageDigreeCentrality(g, characters, end_time, start_time):
             x3n.append(start_time), y3n.append(i)
 
 
-# path = 'xl_files/thor.xlsx'
-# movie_name = 'THOR RAGNAROCK'
-# characters = ['THOR', 'HELA', 'HULK', 'GRANDMASTER']
-# movie_length = 1560
+path = 'xl_files/thor.xlsx'
+movie_name = 'THOR RAGNAROCK'
+characters = ['LOKI', 'HELA', 'HULK', 'GRANDMASTER']
+movie_length = 1560
 
-path = 'xl_files/batman_begin.xlsx'
-movie_name = 'BATMAN BEGIN'
-characters = ['BATMAN', 'DUCARD', 'RACHEL', 'FALCONE']
-movie_length = 1466
+# path = 'xl_files/batman_begin.xlsx'
+# movie_name = 'BATMAN BEGIN'
+# characters = ['BATMAN', 'DUCARD', 'RACHEL', 'FALCONE']
+# movie_length = 1466
 
 df = pd.read_excel(path)
 node_list = df['speaker'].tolist()
