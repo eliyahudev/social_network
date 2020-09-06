@@ -34,7 +34,14 @@ def batmaCreateGraph(g, script):
     speaker = unionSpeakers(script_df['speaker'])
     # addin edges to the graph
     for i in range(len(speaker) - 1):
-        g.add_edge(speaker[i], speaker[i + 1])
+        if str(speaker[i]).__eq__('nan'):
+            g.add_edge('nan', speaker[i + 1])
+
+        elif str(speaker[i + 1]).__eq__('nan'):
+            g.add_edge(speaker[i], 'nan')
+        else:
+            g.add_edge(speaker[i], speaker[i + 1])
+    g.remove_node('MAN: ')
     return g
 
 
@@ -46,7 +53,16 @@ def thorCreatGraph(g, script):
     script_df = pd.read_excel(script)
     speaker = script_df['speaker']
     for i in range(len(speaker) - 1):
-        g.add_edge(speaker[i], speaker[i + 1])
+        if str(speaker[i]).__eq__('nan'):
+            g.add_edge('nan', speaker[i + 1])
+        elif str(speaker[i + 1]).__eq__('nan'):
+            g.add_edge(speaker[i], 'nan')
+        else:
+            g.add_edge(speaker[i], speaker[i + 1])
+    g.remove_node('nan')
+    if g.has_node('MAN:'):
+        g.remove_node('MAN:')
+    print(g.nodes())
     return g
 
 
@@ -71,7 +87,9 @@ def printGraph(g):
         'node_size': 100,
         # 'font_color': '#d3aa78',
     }
-    nx.draw(g, with_labels=True, **options)
+    pos = nx.kamada_kawai_layout(g, scale=0.2)
+
+    nx.draw(g, pos=pos, with_labels=True, **options)
     plt.show()
 
 
@@ -81,20 +99,39 @@ def get_centrality(movie_name, path):
     and print it to screen
     input: movie name and reference to xl file
     output: None"""
+
+    # f = open('xl_files/Q2d_results_' + movie_name + '.xlsx', 'a+')
+    df_xl = pd.DataFrame()
+
     g = [nx.MultiDiGraph(), nx.MultiGraph(), nx.DiGraph(), nx.Graph()]
     name = ['MultiDiGraph()', 'MultiGraph()', 'DiGraph()', 'Graph()']
     print('for the movie: ', movie_name)
     for graph_type, graph_name in zip(g, name):
         g1 = thorCreatGraph(graph_type, path)
         print(graph_name)
+        df_xl[graph_name + ' closeness_centrality:'] = [str(
+            sorted(nx.closeness_centrality(g1).items(), key=lambda x: x[1],
+                   reverse=True)[0:4])]
         print('closeness_centrality: ',
               sorted(nx.closeness_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
         print('degree_centrality: ', sorted(nx.degree_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+        df_xl[graph_name + ' degree_centrality: '] = [str(sorted(nx.degree_centrality(g1).items(), key=lambda x: x[1],
+                                                                 reverse=True)[0:4])]
         print('pagerank algorithm: ', sorted(nx.pagerank_numpy(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+        df_xl[graph_name + ' pagerank algorithm: '] = [str(sorted(nx.pagerank_numpy(g1).items(), key=lambda x: x[1],
+                                                                  reverse=True)[0:4])]
         if graph_name.__eq__('DiGraph()') or graph_name.__eq__('Graph()'):
             print('betweenness_centrality: ',
                   sorted(nx.betweenness_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+            df_xl[graph_name + ' betweenness_centrality: '] = [str(sorted(nx.betweenness_centrality(g1).items(),
+                                                                          key=lambda x: x[1],
+                                                                          reverse=True)[0:4])]
             print('eigenvector_centrality: ',
                   sorted(nx.eigenvector_centrality(g1).items(), key=lambda x: x[1], reverse=True)[0:4])
+            df_xl[graph_name + ' eigenvector_centrality: '] = [str(sorted(nx.eigenvector_centrality(g1).items(),
+                                                                          key=lambda x: x[1],
+                                                                          reverse=True)[0:4])]
         print()
     print()
+    # df_xl.append(df_xl)
+    df_xl.to_excel('xl_files/Q2d_results_' + movie_name + '.xlsx', index=False)

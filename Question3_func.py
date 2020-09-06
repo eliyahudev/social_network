@@ -1,8 +1,8 @@
+import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import graph_creator as gc
+
 
 def createGraph(graph, path):
     """create AB-graph for Thor's movie
@@ -22,8 +22,8 @@ def createSubGraph(graph, path, characters_list):
     return g2
 
 
-def voting(g,path, characters, ancors):
-    g = createSubGraph(g , path, characters)
+def voting(g, path, characters, ancors):
+    g = createSubGraph(g, path, characters)
     edge_matrix = np.zeros((len(characters), len(characters)))
     l = 0
     for i in characters:
@@ -77,9 +77,10 @@ def vornoi(graph, path, characters, center_nodes):
     g = createSubGraph(graph, path, characters)
     return nx.voronoi_cells(g, center_nodes)
 
-def translate_voting(g ,path, characters, ancors, dict_characters):
+
+def translate_voting(g, path, characters, ancors, dict_characters):
     d = dict()
-    for i in voting_partition(voting(g ,path, characters, ancors), ancors).values():
+    for i in voting_partition(voting(g, path, characters, ancors), ancors).values():
         d[dict_characters[list(i)[0]]] = list()
         for j in i:
             d[dict_characters[list(i)[0]]].append(dict_characters[j])
@@ -88,17 +89,17 @@ def translate_voting(g ,path, characters, ancors, dict_characters):
 
 def mst_partition(G, vornoi_partition, colors):
     red_edges = list(vornoi_partition)
-    edge_colours = ['black' if not edge in red_edges else 'red'
-                    for edge in G.edges()]
-    black_edges = [edge for edge in G.edges() if edge not in red_edges]
 
-    # Need to create a layout when doing
     # separate calls to draw nodes and edges
-    pos = nx.spring_layout(G)
-    nx.draw_networkx_nodes(G, pos, cmap=plt.get_cmap('jet'), node_size=500)
-    nx.draw_networkx_labels(G, pos)
-    nx.draw_networkx_edges(G, pos, edgelist=red_edges, edge_color='r', arrows=True)
-    nx.draw_networkx_edges(G, pos, edgelist=black_edges, arrows=False)
+    rd_edges = [edge for edge in G.edges() if edge in red_edges or edge[0] in red_edges]
+    black_edges = [edge for edge in G.edges() if not edge in red_edges and not edge[0] in red_edges]
+
+    # fig = plt.figure(figsize=(50, 50))
+    pos = nx.circular_layout(G, scale=0.2)
+    # pos[0] = np.array([-10,-10])
+    nx.draw_networkx_edges(G, pos, edgelist=rd_edges, width=2, edge_color='r', arrows=True, label=True)
+    nx.draw_networkx_edges(G, pos, edgelist=black_edges, width=2, edge_color='b', arrows=False)
+    nx.draw(G, pos=pos, with_labels=True)
     plt.show()
 
 
@@ -115,34 +116,35 @@ def paintGraph(g, color):
     nx.draw(g, with_labels=True, **options)
 
 
-
-g = nx.MultiDiGraph()
+g = nx.Graph()
 colors = ['green', 'black', 'blue', 'red']
 
 # movie selected:
-# path = 'xl_files/batman_begin.xlsx'
-# characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
-# dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
-#                    7: 'CRANE', 8:' EARLE', 9: 'FLASS'}
-# center_nodes = {'BATMAN', 'DUCARD', 'FALCONE'}
-# ancors = [0, 3, 4]
+path = 'xl_files/batman_begin.xlsx'
+characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
+dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
+                   7: 'CRANE', 8:' EARLE', 9: 'FLASS'}
+center_nodes = {'BATMAN', 'DUCARD', 'FALCONE'}
+ancors = [0, 3, 4]
 
-path = 'xl_files/thor.xlsx'
-characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
-dict_characters = {0: 'THOR', 1: 'HELA', 2: 'LOKI', 3: 'VALKYRIE', 4: 'HULK', 5: 'GRANDMASTER', 6: 'SKURGE',
-                   7: 'HEIMDALL', 8: 'SURTUR', 9: 'ODIN'}
-center_nodes = {'THOR', 'HELA', 'HULK'}
-ancors = [0, 1, 4]
+# path = 'xl_files/thor.xlsx'
+# characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
+# dict_characters = {0: 'THOR', 1: 'HELA', 2: 'LOKI', 3: 'VALKYRIE', 4: 'HULK', 5: 'GRANDMASTER', 6: 'SKURGE',
+#                    7: 'HEIMDALL', 8: 'SURTUR', 9: 'ODIN'}
+# center_nodes = {'THOR', 'HELA', 'HULK'}
+# ancors = [0, 1, 4]
 
 # # part d
-# print('part d:')
+print('part d:')
 vornoi_partition = vornoi(g, path, characters, center_nodes)
-# print(vornoi_partition)
-# vot_part = translate_voting(g, path, characters, ancors, dict_characters)
-# print(vot_part)
+print('vornoi_partition', vornoi_partition)
+vot_part = translate_voting(g, path, characters, ancors, dict_characters)
+print('vot_part', vot_part)
 g2 = createSubGraph(g, path, characters)
 # print(nx.voterank(g2, 2))
-# print('modularity: ',nx.modularity_spectrum(g2))
-
+print('modularity: ', nx.modularity_spectrum(g2))
+g3 = createSubGraph(nx.Graph(), path, characters)
+# print('degree centrality: ', nx.(g3))
 # # part g
+print('part g')
 mst_partition(g2, vornoi_partition, colors)
