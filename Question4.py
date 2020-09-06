@@ -3,9 +3,6 @@ import networkx as nx
 import pandas as pd
 
 
-# TODO change characters ':' in batman begin xl
-
-
 def avrageDigreeCentrality(path, character, time):
     df = pd.read_excel(path)
     g = nx.MultiGraph()
@@ -195,79 +192,86 @@ def WordsCounter(path):
 
 
 # inputs
-path = 'xl_files/batman_begin.xlsx'
-second_path = 'xl_files/thor.xlsx'
-# heroes = ['BATMAN', 'DUCARD']
-heroes = ['BATMAN', 'DUCARD', 'RACHEL', 'ALFRED']
+# path = 'xl_files/batman_begin.xlsx'
+# second_path = 'xl_files/thor.xlsx'
+# # heroes = ['BATMAN', 'DUCARD']
+# heroes = ['BATMAN', 'DUCARD', 'RACHEL', 'ALFRED']
+# important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
+#                    'Justice', 'crim', 'father', 'company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
 
-# heroes = ['THOR', 'HELA']
-# important_words = ['Asgard','Hulk','Thor','place','people','Odin','stop','Ragnarok',
-#                    'Thunder','hammer','Hela','God','death','time','think','kind','past','thank','honored','you']
-important_words = ['Wayne', 'Gotham', 'stop', 'Master', 'Bruce', 'become', 'Falcone', 'Ra\'s', 'Alfred', 'Rachel',
-                   'Justice', 'crim', 'father', 'company', 'fear', 'Crane', 'people', 'thank', 'Mr', 'you']
-# answers
-# part a,b
-ce = CeClock(path)
-# second_ce = CeClock(second_path)
-cw = CwClock(path)
-cl = ClClock(path, important_words)
-# second_cw = CwClock(second_path)
-
-# pard c
-# evolving_graph_print([ce])
-# evolving_graph_print([normalizeClock(ce)])
-# evolving_graph_print([cw])
-# evolving_graph_print([normalizeClock(cw)])
-
-# M = Mdiagram(cw, ce)
-# M2 = Mdiagram(normalizeClock(cw), normalizeClock(ce))
-# evolving_graph_print([cw, ce])
-# evolving_graph_print([M])
-# evolving_graph_print([M2])
-
-# print(MdiagramMinMax(M))
-# ce = CeClock(path)
-# cw = CwClock(path)
-# evolving_graph_print([ce])
-# evolving_graph_print([cw])
+path = 'xl_files/thor.xlsx'
+second_path = 'xl_files/batman_begin.xlsx'
+heroes = ['THOR', 'HELA']
+important_words = ['Asgard', 'Hulk', 'Thor', 'place', 'people', 'Odin', 'stop', 'Ragnarok',
+                   'Thunder', 'hammer', 'Hela', 'God', 'death', 'time', 'think', 'kind', 'past', 'thank', 'honored',
+                   'you']
 
 
-# M = Mdiagram(cw, ce)
-# M2 = Mdiagram(second_cw, second_ce)
-# evolving_graph_print([M,M2])
-# print(MdiagramMinMax(M))
+def Question4(path, heroes, important_words):
+    # answers
+    print('part a,b')
+    ce = CeClock(path)
+    second_ce = CeClock(second_path)
+    cw = CwClock(path)
+    cl = ClClock(path, important_words)
+    second_cw = CwClock(second_path)
 
-# part d
-# avrage_degree_graph(path, heroes)
+    print('pard c')
+    evolving_graph_print([ce])
+    evolving_graph_print([normalizeClock(ce)])
+    evolving_graph_print([cw])
+    evolving_graph_print([normalizeClock(cw)])
 
-# part e
-# avrageDegreeMDiagram(path, heroes, ce)
+    M = Mdiagram(cw, ce)
+    M2 = Mdiagram(normalizeClock(cw), normalizeClock(ce))
+    evolving_graph_print([cw, ce])
+    evolving_graph_print([M])
+    evolving_graph_print([M2])
 
-# part f
-# WordsCounter(path)
-# evolving_graph_print(cl)
+    print(MdiagramMinMax(M))
+    ce = CeClock(path)
+    cw = CwClock(path)
+    evolving_graph_print([ce])
+    evolving_graph_print([cw])
 
-# part g
-# print('Part g')
-# evolving_graph_print([Mdiagram(cl, ce)])
+    M = Mdiagram(cw, ce)
+    M2 = Mdiagram(second_cw, second_ce)
+    evolving_graph_print([M, M2])
+    print(MdiagramMinMax(M))
 
-# part h
-# evolving_graph_print([normalizeClock(second_cw), normalizeClock(cw)])
-# evolving_graph_print([Mdiagram(normalizeClock(second_cw), normalizeClock(cw))])
+    print('part d')
+    avrage_degree_graph(path, heroes)
 
-# M = NormalizeMDiagram(cw, ce)
-# M2 = NormalizeMDiagram(second_cw, second_ce)
-# evolving_graph_print([M,M2])
-# M3 = {k: i - j for i, j, k in zip(M.values(), M2.values(), M2.keys())}
-# evolving_graph_print([M3])
-# evolving_graph_print([Mdiagram(cw, second_cw)])
+    print('part e')
+    avrageDegreeMDiagram(path, heroes, ce)
 
-# M = dict()
-# T = 0
-# for i in df['text']:
-#     if not str(i).__eq__('nan'):
-#         while T < min(len(cl),len(ce)):
-#             M[T] = cl[T] - ce[T]
-#             T += 1
-#
-# evolving_graph_print([M])
+    print('part f')
+    # WordsCounter(path)
+    evolving_graph_print([cl])
+
+    print('Part g')
+    evolving_graph_print([Mdiagram(cl, ce)])
+
+    print('part h')
+    evolving_graph_print([normalizeClock(second_cw), normalizeClock(cw)])
+    evolving_graph_print([Mdiagram(normalizeClock(second_cw), normalizeClock(cw))])
+
+    # M = Mdiagram(normalizeClock(cw), normalizeClock(ce))
+    # M2 = Mdiagram(normalizeClock(second_cw), normalizeClock(second_ce))
+    # evolving_graph_print([M,M2])
+    M3 = {k: i - j for i, j, k in zip(M.values(), M2.values(), M2.keys())}
+    evolving_graph_print([M3])
+    evolving_graph_print([Mdiagram(cw, second_cw)])
+
+    # M = dict()
+    # T = 0
+    # for i in df['text']:
+    #     if not str(i).__eq__('nan'):
+    #         while T < min(len(cl),len(ce)):
+    #             M[T] = cl[T] - ce[T]
+    #             T += 1
+
+    # evolving_graph_print([M])
+
+
+Question4(path, heroes, important_words)

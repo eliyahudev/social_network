@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
-
+import time
 
 def createGraph(graph, path):
     """create AB-graph for Thor's movie
@@ -17,39 +17,36 @@ def createGraph(graph, path):
 
 
 def createSubGraph(graph, path, characters_list):
-    g = createGraph(graph, path)
-    g2 = nx.subgraph(g, characters_list)
-    return g2
+    g2 = createGraph(graph, path)
+    g3 = g2.copy()
+    for i in g2.nodes():
+        if not str(i) in characters_list:
+            g3.remove_node(i)
+    return g3
 
 
 def voting(g, path, characters, ancors):
     g = createSubGraph(g, path, characters)
-    edge_matrix = np.zeros((len(characters), len(characters)))
-    l = 0
-    for i in characters:
-        k = 0
-        for j in characters:
-            if g.has_edge(i, j):
-                edge_matrix[l][k] = float(len(g.get_edge_data(i, j)))
-            k += 1
-        l += 1
+    edge_matrix = nx.to_numpy_array(g)
 
     for i in range(len(edge_matrix)):
         edge_matrix[i][i] = 0
+
     for i in ancors:
         edge_matrix[i] = np.zeros(len(edge_matrix))
         edge_matrix[i][i] = 1
 
     k = 0
     for i in edge_matrix:
-        if sum(i):
+        if sum(i) != 0:
             edge_matrix[k] = (i / sum(i))
         else:
             edge_matrix[k] = 0
         k += 1
 
-    for i in range(5000):
-        edge_matrix = edge_matrix @ edge_matrix
+    for i in range(50000):
+        edge_matrix = edge_matrix.dot(edge_matrix)
+
     return edge_matrix
 
 
@@ -87,12 +84,12 @@ def translate_voting(g, path, characters, ancors, dict_characters):
     return d
 
 
-def mst_partition(G, vornoi_partition, colors):
-    red_edges = list(vornoi_partition)
-
+def mst_partition(G, vornoi_partition, colors, center_nodes):
+    print(vornoi_partition)
+    red_edges = vornoi_partition[center_nodes[0]]
     # separate calls to draw nodes and edges
-    rd_edges = [edge for edge in G.edges() if edge in red_edges or edge[0] in red_edges]
-    black_edges = [edge for edge in G.edges() if not edge in red_edges and not edge[0] in red_edges]
+    rd_edges = [edge for edge in G.edges() if edge[1] in red_edges and edge[0] in red_edges]
+    black_edges = [edge for edge in G.edges() if not edge[1] in red_edges and not edge[0] in red_edges]
 
     # fig = plt.figure(figsize=(50, 50))
     pos = nx.circular_layout(G, scale=0.2)
@@ -116,35 +113,54 @@ def paintGraph(g, color):
     nx.draw(g, with_labels=True, **options)
 
 
-g = nx.Graph()
-colors = ['green', 'black', 'blue', 'red']
+def Question3(g, path, characters, center_nodes, ancors, dict_characters, colors):
+    # # part d
+    print('part d:')
+    vornoi_partition = vornoi(g, path, characters, center_nodes)
+    print('vornoi_partition', vornoi_partition)
+    vot_part = translate_voting(g, path, characters, ancors, dict_characters)
+    print('vot_part', vot_part)
+    g2 = createSubGraph(g, path, characters)
+    g3 = nx.Graph(g2)
+    print('modularity: ', nx.modularity_spectrum(g3))
 
-# movie selected:
-path = 'xl_files/batman_begin.xlsx'
-characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
-dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
-                   7: 'CRANE', 8:' EARLE', 9: 'FLASS'}
-center_nodes = {'BATMAN', 'DUCARD', 'FALCONE'}
-ancors = [0, 3, 4]
+    # part g
+    print('part g')
+    print('printing voting tree result')
+    mst_partition(g2, vot_part, colors, center_nodes)
+    print('printing vornoi tree result')
+    mst_partition(g3, vornoi_partition, colors, center_nodes)
+    pass
 
-# path = 'xl_files/thor.xlsx'
-# characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
-# dict_characters = {0: 'THOR', 1: 'HELA', 2: 'LOKI', 3: 'VALKYRIE', 4: 'HULK', 5: 'GRANDMASTER', 6: 'SKURGE',
-#                    7: 'HEIMDALL', 8: 'SURTUR', 9: 'ODIN'}
-# center_nodes = {'THOR', 'HELA', 'HULK'}
-# ancors = [0, 1, 4]
 
-# # part d
-print('part d:')
-vornoi_partition = vornoi(g, path, characters, center_nodes)
-print('vornoi_partition', vornoi_partition)
-vot_part = translate_voting(g, path, characters, ancors, dict_characters)
-print('vot_part', vot_part)
-g2 = createSubGraph(g, path, characters)
-# print(nx.voterank(g2, 2))
-print('modularity: ', nx.modularity_spectrum(g2))
-g3 = createSubGraph(nx.Graph(), path, characters)
-# print('degree centrality: ', nx.(g3))
-# # part g
-print('part g')
-mst_partition(g2, vornoi_partition, colors)
+def results():
+    print('movie selected:' + 'batman_begin')
+    print()
+    g = nx.MultiGraph()
+    colors = ['green', 'black', 'blue', 'red']
+    path = 'xl_files/batman_begin.xlsx'
+    characters = ['BATMAN', 'ALFRED', 'GORDON', 'DUCARD', 'FALCONE', 'FOX', 'RACHEL', 'CRANE', 'EARLE', 'FLASS']
+    dict_characters = {0: 'BATMAN', 1: 'ALFRED', 2: 'GORDON', 3: 'DUCARD', 4: 'FALCONE', 5: 'FOX', 6: 'RACHEL',
+                       7: 'CRANE', 8: ' EARLE', 9: 'FLASS'}
+    center_nodes = ['BATMAN', 'DUCARD', 'CRANE']
+    ancors = [0, 3, 7]
+
+    Question3(g, path, characters, center_nodes, ancors, dict_characters, colors)
+    print()
+
+    print('movie selected:' + 'thor ragnarok')
+    print()
+    g = nx.MultiGraph()
+    colors = ['green', 'black', 'blue', 'red']
+    path = 'xl_files/thor.xlsx'
+    characters = ['THOR', 'HELA', 'LOKI', 'VALKYRIE', 'HULK', 'GRANDMASTER', 'SKURGE', 'HEIMDALL', 'SURTUR', 'ODIN']
+    dict_characters = {0: 'THOR', 1: 'HELA', 2: 'LOKI', 3: 'VALKYRIE', 4: 'HULK', 5: 'GRANDMASTER', 6: 'SKURGE',
+                       7: 'HEIMDALL', 8: 'SURTUR', 9: 'ODIN'}
+    center_nodes = ['THOR', 'HELA']
+    ancors = [0, 1]
+
+
+    Question3(g, path, characters, center_nodes, ancors, dict_characters, colors)
+
+
+results()
