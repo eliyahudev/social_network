@@ -1,69 +1,109 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
 
-import numpy as np
+a0, a1, a2, a3 = [], [], [], []
+x1, x2, x3, x0 = [], [], [], []
+y0, y1, y2, y3 = [], [], [], []
 
-x = np.arange(-2, 2, 0.1)
-y = np.arange(-2, 2, 0.1)
-mx, my = np.meshgrid(x, y, indexing='ij')
-mz1 = np.abs(mx) + np.abs(my)
-mz2 = mx ** 2 + my ** 2
-
-# A fix for "API 'QString' has already been set to version 1"
-# see https://github.com/enthought/pyface/issues/286#issuecomment-335436808
-from sys import version_info
-if version_info[0] < 3:
-    import pyface.qt
+a0n, a1n, a2n, a3n = [], [], [], []
+x1n, x2n, x3n, x0n = [], [], [], []
+y0n, y1n, y2n, y3n = [], [], [], []
 
 
-def v1_matplotlib():
-    from matplotlib import pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
+def avrageDigreeCentrality(g, characters, end_time, start_time):
+    for i in range(start_time + 1, end_time - 1):
+        g.add_edge(node_list[i], node_list[i + 1])
+        deg_cent = nx.degree_centrality(g)
+        d = {k: deg_cent[k] for k in characters}
+        x = max(d, key=d.get)
+        z = min(d, key=d.get)
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    surf1 = ax.plot_surface(mx, my, mz1, cmap='winter')
-    surf2 = ax.plot_surface(mx, my, mz2, cmap='autumn')
-    ax.view_init(azim=60, elev=16)
-    fig.show()
+        # get the highest
+        if str(x).__eq__(characters[0]):
+            x0.append(i), y0.append(start_time)
+        elif str(x).__eq__(characters[1]):
+            x1.append(i), y1.append(start_time)
+        elif str(x).__eq__(characters[2]):
+            x2.append(i), y2.append(start_time)
+        else:
+            x3.append(i), y3.append(start_time)
 
+        # get the lowest
+        if str(z).__eq__(characters[0]):
+            x0n.append(start_time), y0n.append(i)
+        elif str(z).__eq__(characters[1]):
+            x1n.append(start_time), y1n.append(i)
+        elif str(z).__eq__(characters[2]):
+            x2n.append(start_time), y2n.append(i)
+        else:
+            x3n.append(start_time), y3n.append(i)
 
-def v2_mayavi(transparency):
-    from mayavi import mlab
-    fig = mlab.figure()
+# ploting degree centrality surface fir thor
+print('ploting degree centrality surface fir thor')
 
-    ax_ranges = [-2, 2, -2, 2, 0, 8]
-    ax_scale = [1.0, 1.0, 0.4]
-    ax_extent = ax_ranges * np.repeat(ax_scale, 2)
+path = 'xl_files/thor.xlsx'
+movie_name = 'THOR RAGNAROCK'
+characters = ['THOR', 'HELA', 'HULK', 'GRANDMASTER']
+movie_length = 1560
 
-    surf3 = mlab.surf(mx, my, mz1, colormap='Blues')
-    surf4 = mlab.surf(mx, my, mz2, colormap='Oranges')
+df = pd.read_excel(path)
+node_list = df['speaker'].tolist()
 
-    surf3.actor.actor.scale = ax_scale
-    surf4.actor.actor.scale = ax_scale
-    mlab.view(60, 74, 17, [-2.5, -4.6, -0.3])
-    mlab.outline(surf3, color=(.7, .7, .7), extent=ax_extent)
-    mlab.axes(surf3, color=(.7, .7, .7), extent=ax_extent,
-              ranges=ax_ranges,
-              xlabel='x', ylabel='y', zlabel='z')
+for start in range(movie_length):
+    g = nx.MultiGraph()
+    g.add_nodes_from(node_list)
+    avrageDigreeCentrality(g, characters, movie_length, start)
+    print('\rcreating surface [%.2f%%]' % (start / (movie_length) * 100), end="")
 
-    if transparency:
-        surf3.actor.property.opacity = 0.5
-        surf4.actor.property.opacity = 0.5
-        fig.scene.renderer.use_depth_peeling = 1
+# plot degree centrality surface
+fig = plt.figure(movie_name)
+ax = fig.add_subplot(111)
 
+# draw the highes value
+ax.scatter(x0, y0, c='r')
+ax.scatter(x1, y1, c='b')
+ax.scatter(x2, y2, c='g')
+ax.scatter(x3, y3, c='y')
 
-v1_matplotlib()
-v2_mayavi(False)
-v2_mayavi(True)
+# draw the lowest value
+ax.scatter(x0n, y0n, c='r')
+ax.scatter(x1n, y1n, c='b')
+ax.scatter(x2n, y2n, c='g')
+ax.scatter(x3n, y3n, c='y')
 
-# To install mayavi, the following currently works for me (Windows 10):
-#
-#   conda create --name mayavi_test_py2 python=2.7 matplotlib mayavi=4.4.0
-#    (installs pyqt=4.10.4 mayavi=4.4.0 vtk=5.10.1)
-#    * the `use_depth_peeling=1` got no effect. Transparency is not correct.
-#    * requires `import pyface.qt` or similar workaround
-#
-# or
-#
-#   conda create --name mayavi_test_py3 python=3.6 matplotlib
-#   conda activate mayavi_test_py3
-#   pip install mayavi
+# show
+# plt.legend(characters)
+plt. show()
+
+# ploting degree centrality surface fir batman
+print('ploting degree centrality surface fir batman')
+
+df = pd.read_excel(path)
+node_list = df['speaker'].tolist()
+
+for start in range(movie_length):
+    g = nx.MultiGraph()
+    g.add_nodes_from(node_list)
+    avrageDigreeCentrality(g, characters, movie_length, start)
+    print('\rcreating surface [%.2f%%]' % (start / (movie_length) * 100), end="")
+
+# plot degree centrality surface
+fig = plt.figure(movie_name)
+ax = fig.add_subplot(111)
+
+# draw the highes value
+ax.scatter(x0, y0, c='r')
+ax.scatter(x1, y1, c='b')
+ax.scatter(x2, y2, c='g')
+ax.scatter(x3, y3, c='y')
+
+# draw the lowest value
+ax.scatter(x0n, y0n, c='r')
+ax.scatter(x1n, y1n, c='b')
+ax.scatter(x2n, y2n, c='g')
+ax.scatter(x3n, y3n, c='y')
+
+# show
+# plt.legend(characters)
+plt. show()

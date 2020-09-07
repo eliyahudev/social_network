@@ -39,16 +39,60 @@ def avrageDigreeCentrality(g, characters, end_time, start_time):
         else:
             x3n.append(start_time), y3n.append(i)
 
+# ploting degree centrality surface fir thor
+print('ploting degree centrality surface fir thor')
 
 path = 'xl_files/thor.xlsx'
 movie_name = 'THOR RAGNAROCK'
-characters = ['LOKI', 'HELA', 'HULK', 'GRANDMASTER']
+characters = ['THOR', 'HELA', 'HULK', 'GRANDMASTER']
 movie_length = 1560
 
-# path = 'xl_files/batman_begin.xlsx'
-# movie_name = 'BATMAN BEGIN'
-# characters = ['BATMAN', 'DUCARD', 'RACHEL', 'FALCONE']
-# movie_length = 1466
+df = pd.read_excel(path)
+node_list = df['speaker'].tolist()
+
+for start in range(movie_length):
+    g = nx.MultiGraph()
+    g.add_nodes_from(node_list)
+    avrageDigreeCentrality(g, characters, movie_length, start)
+    print('\rcreating surface [%.2f%%]' % (start / (movie_length) * 100), end="")
+
+# plot degree centrality surface
+fig = plt.figure(movie_name)
+ax = fig.add_subplot(111)
+
+# draw the highes value
+ax.scatter(x0, y0, c='r')
+ax.scatter(x1, y1, c='b')
+ax.scatter(x2, y2, c='g')
+ax.scatter(x3, y3, c='y')
+
+# draw the lowest value
+ax.scatter(x0n, y0n, c='r')
+ax.scatter(x1n, y1n, c='b')
+ax.scatter(x2n, y2n, c='g')
+ax.scatter(x3n, y3n, c='y')
+
+# show
+# plt.legend(characters)
+plt. show()
+
+
+# ploting degree centrality surface fir batman
+print('ploting degree centrality surface fir batman')
+
+a0, a1, a2, a3 = [], [], [], []
+x1, x2, x3, x0 = [], [], [], []
+y0, y1, y2, y3 = [], [], [], []
+
+a0n, a1n, a2n, a3n = [], [], [], []
+x1n, x2n, x3n, x0n = [], [], [], []
+y0n, y1n, y2n, y3n = [], [], [], []
+
+path = 'xl_files/batman_begin.xlsx'
+movie_name = 'BATMAN BEGIN'
+characters = ['BATMAN', 'DUCARD', 'RACHEL', 'FALCONE']
+movie_length = 1466
+
 
 df = pd.read_excel(path)
 node_list = df['speaker'].tolist()
