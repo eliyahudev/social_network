@@ -118,11 +118,32 @@ def Question3(g, path, characters, center_nodes, ancors, dict_characters, colors
     print('part d:')
     vornoi_partition = vornoi(g, path, characters, center_nodes)
     print('vornoi_partition', vornoi_partition)
+    vot_part = translate_voting(nx.MultiDiGraph(g), path, characters, ancors, dict_characters)
+    print('vot_part-Directed Weighted', vot_part)
     vot_part = translate_voting(g, path, characters, ancors, dict_characters)
-    print('vot_part', vot_part)
+    print('vot_part-UnDirected Weighted', vot_part)
+    vot_part = translate_voting(nx.DiGraph(g), path, characters, ancors, dict_characters)
+    print('vot_part-Directed UnWeighted', vot_part)
+    vot_part = translate_voting(nx.Graph(g), path, characters, ancors, dict_characters)
+    print('vot_part-UnDirected UnWeighted', vot_part)
     g2 = createSubGraph(g, path, characters)
     g3 = nx.Graph(g2)
-    print('modularity: ', nx.modularity_spectrum(g3))
+
+    # Modularity:
+    print("Modularity: " + str(nx.algorithms.community.modularity_max.greedy_modularity_communities(g3)))
+
+    # Centrality
+    comp = nx.algorithms.community.centrality.girvan_newman(g3)
+    for x in comp:
+        print("Centrality: " + str(x))
+        break
+
+    # Clique Percolation
+    print("CliquePercolation: " + str(
+        list(nx.algorithms.community.kclique.k_clique_communities(g3, 2))))
+
+    # Vertex Moving:
+    print("Vertex Moving: " + str(list(nx.algorithms.community.asyn_fluid.asyn_fluidc(g3, 2))))
 
     # part g
     print('part g')

@@ -271,11 +271,10 @@ def Question4(path, heroes, important_words):
     print('comparence between thor and batman cw clock')
     evolving_graph_print([normalizeClock(second_cw), normalizeClock(cw)])
     print('Mdiagram with thor and batman cw clock')
-    evolving_graph_print([Mdiagram(normalizeClock(second_cw), normalizeClock(cw))])
+    # evolving_graph_print([Mdiagram(normalizeClock(second_cw), normalizeClock(cw))])
 
 
     M5 = {k: i - j for i, j, k in zip(M.values(), M3.values(), M3.keys())}
     evolving_graph_print([M5])
-    evolving_graph_print([Mdiagram(cw, second_cw)])
 
 Question4(path, heroes, important_words)

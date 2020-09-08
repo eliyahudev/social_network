@@ -1,11 +1,10 @@
-<!--<style>
-body,h1,h2,h3,h4,h5,p {direction: rtl; color = "red"; font-family: "Raleway", sans-serif}
-</style>
-<body class="w3-light-grey">
--->
-
 <h1>"# social_network project"</h1>
 <div id="paint">
-<i><p> שאלה 1 </p></i>
-
+<p> neriya and eliyahu project </p>
+<p> the file while run at google colab
+<a>https://colab.research.google.com/drive/12YRPZabtcOqwS5OrAwpsqkCYSd6Ae7IC</a>
+</p>
+<p>use Question2, Question3_func, Question4, Question5 for solustion</p>
 </div>
+
+<h2>enjoy!</h2>
